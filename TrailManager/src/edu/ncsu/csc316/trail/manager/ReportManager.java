@@ -1,5 +1,9 @@
 package edu.ncsu.csc316.trail.manager;
 
+import edu.ncsu.csc316.trail.dsa.Algorithm;
+import edu.ncsu.csc316.trail.dsa.DSAFactory;
+import edu.ncsu.csc316.trail.dsa.DataStructure;
+
 public class ReportManager {
 
     public ReportManager(String pathToLandmarkFile, String pathToTrailFile) throws FileNotFoundException {
@@ -10,6 +14,10 @@ public class ReportManager {
         // This is the ONLY place you will need to call these DSAFactory setter methods!
         
         // TODO: Complete this constructor
+    	
+    	DSAFactory.setMapType(DataStructure.UNORDEREDLINKEDMAP);
+    	DSAFactory.setListType(DataStructure.SINGLYLINKEDLIST);
+    	DSAFactory.setComparisonSorterType(Algorithm.MERGESORT);
         
     }
 
