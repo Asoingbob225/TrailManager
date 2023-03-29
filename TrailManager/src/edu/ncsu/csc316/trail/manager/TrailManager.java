@@ -61,18 +61,15 @@ public class TrailManager {
 			}
 			minDistMap.put(current,  distances.get(current));
 		}
-		
-		
-		
-		
+
 		return minDistMap;
 	}
 	
-	private Landmark getLowestDistanceLandmark(Map<Landmark, Integer> allDistMap) {
+	private Landmark getLowestDistanceLandmark(Map<Landmark, Integer> reachFromOrigin) {
 		Landmark lowestDistLandmark = null;
 		int lowestDist = Integer.MAX_VALUE;
-		for (Landmark landmark: allDistMap) {
-			int distance = allDistMap.get(landmark);
+		for (Landmark landmark: reachFromOrigin) {
+			int distance = reachFromOrigin.get(landmark);
 			if (distance < lowestDist) {
 				lowestDist = distance;
 				lowestDistLandmark = landmark;
