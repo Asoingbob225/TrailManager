@@ -49,9 +49,11 @@ public class TrailManager {
 		while (reachFromOrigin.size() != 0) {
 			Landmark current = getLowestDistanceLandmark(reachFromOrigin);
 			reachFromOrigin.remove(current);
+			
 			for (Entry<Landmark, Integer> neighboringLandmark: neighborDist.get(current).entrySet()) {
 				Landmark neighbor = neighboringLandmark.getKey();
 				Integer lenTrail = neighboringLandmark.getValue();
+				
 				if(minDistMap.get(neighbor) == null) {
 					getMinimumDistance(neighbor, current, lenTrail, distances);
 					reachFromOrigin.put(neighbor, distances.get(neighbor));
@@ -59,6 +61,10 @@ public class TrailManager {
 			}
 			minDistMap.put(current,  distances.get(current));
 		}
+		
+		
+		
+		
 		return minDistMap;
 	}
 	
@@ -123,4 +129,5 @@ public class TrailManager {
 		}
 		return list;
 	}
+	
 }
