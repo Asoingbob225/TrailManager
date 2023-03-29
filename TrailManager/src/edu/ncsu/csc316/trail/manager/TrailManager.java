@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 
 import edu.ncsu.csc316.dsa.list.List;
 import edu.ncsu.csc316.dsa.map.Map;
+import edu.ncsu.csc316.dsa.map.Map.Entry;
 import edu.ncsu.csc316.trail.data.Landmark;
 import edu.ncsu.csc316.trail.data.Trail;
 import edu.ncsu.csc316.trail.io.TrailInputReader;
@@ -14,78 +15,112 @@ public class TrailManager {
 	private List<Landmark> landmarks;
 	private List<Trail> trails;
 	
-	private Map<Landmark, List<Trail>> map = DSAFactory.getMap(null);
-
 	public TrailManager(String pathToLandmarkFile, String pathToTrailFile) throws FileNotFoundException {
 
     	landmarks = TrailInputReader.readLandmarks(pathToLandmarkFile);
     	trails = TrailInputReader.readTrails(pathToTrailFile);
     	
-    	List<Trail> intersecting = DSAFactory.getIndexedList();
-
-    	for (int i = 0; i < landmarks.size(); i++) {
-    		for (int j = 0; j < trails.size(); j++) {
-    			if (landmarks.get(i).getId().equals(trails.get(j).getLandmarkOne()) || landmarks.get(i).getId().equals(trails.get(j).getLandmarkTwo())) {
-    				intersecting.addLast(trails.get(j));
-    			}
-    		}
-    		for (int k = 0; k < intersecting.size(); i++) {
-    			if (!landmarks.get(i).getId().equals(intersecting.get(k).getLandmarkOne()) && !landmarks.get(i).getId().equals(intersecting.get(k).getLandmarkTwo())) {
-    				intersecting.remove(k);
-    			}
-    		}
-    		map.put(landmarks.get(i), intersecting);
-    	}
-    }
+	}
 
 	public Map<Landmark, Integer> getDistancesToDestinations(String originLandmark) {
-		// TODO: Complete this method
-		// Remember to use DSAFactory to get instances of data structures or sorters
-		// that you will need!
-		// For example: DSAFactory.getIndexedList() or DSAFactory.getMap(null)
-		// See the project writeup for more information about using DSAFactory.
+		
+		Landmark origin = getLandmarkByID(originLandmark);
 
-		Map<Landmark, Integer> distMap = DSAFactory.getMap(null);
-		List<Landmark> landList = DSAFactory.getIndexedList();
-
-		for (Landmark k: map) {
-			if (k.getId().equals(originLandmark)) {
-				// If the landmark is the starting point it would be 0 feet away
-				landList.addFirst(k);
-				distMap.put(k, 0);
+		Map<Landmark, Integer> minDistMap = DSAFactory.getMap(null);
+		
+		Map<Landmark, Integer> reachFromOrigin = DSAFactory.getMap(null);
+		
+		Map<Landmark, Integer> distances = DSAFactory.getMap(null);
+		
+		for (Landmark landmark: landmarks) {
+			distances.put(landmark, Integer.MAX_VALUE);
+		}
+		
+		Map<Landmark, Map<Landmark, Integer>> neighborDist = DSAFactory.getMap(null);
+		
+		for (Landmark landmark: landmarks) {
+			neighborDist.put(landmark, getDistancesToNeighbors(landmark));
+		}
+		
+		distances.put(origin,  0);
+		
+		reachFromOrigin.put(origin, distances.get(origin));
+		
+		while (reachFromOrigin.size() != 0) {
+			Landmark current = getLowestDistanceLandmark(reachFromOrigin);
+			reachFromOrigin.remove(current);
+			for (Entry<Landmark, Integer> neighboringLandmark: neighborDist.get(current).entrySet()) {
+				Landmark neighbor = neighboringLandmark.getKey();
+				Integer lenTrail = neighboringLandmark.getValue();
+				if(minDistMap.get(neighbor) == null) {
+					getMinimumDistance(neighbor, current, lenTrail, distances);
+					reachFromOrigin.put(neighbor, distances.get(neighbor));
+				}
 			}
-			else {
-				landList.addLast(k);
-				//todo
+			minDistMap.put(current,  distances.get(current));
+		}
+		return minDistMap;
+	}
+	
+	private Landmark getLowestDistanceLandmark(Map<Landmark, Integer> allDistMap) {
+		Landmark lowestDistLandmark = null;
+		int lowestDist = Integer.MAX_VALUE;
+		for (Landmark landmark: allDistMap) {
+			int distance = allDistMap.get(landmark);
+			if (distance < lowestDist) {
+				lowestDist = distance;
+				lowestDistLandmark = landmark;
 			}
+		}
+		return lowestDistLandmark;
+	}
+	
+	private void getMinimumDistance(Landmark lowestDist, Landmark origin, Integer lenTrail, Map<Landmark, Integer> distances) {
+		int startDist = distances.get(origin);
+		if ( startDist + lenTrail < distances.get(lowestDist)) {
+			distances.put(lowestDist,  startDist + lenTrail);
 		}
 	}
-	private int startingToLandmark(Landmark origin, Landmark k) {
-		// The distance between the target Landmark and the current trail
-		int currentDist = 0;
-		// The total distance of all the Landmark’s trails
-		int totalDist = 0;
-		// Boolean signifying whether a Landmark’s trails lead to the starting point or not
-		boolean atDest = false;
-		
-//		int numTrails = map.get(k).size();
-//		for (int i = 0; i < numTrails; i++) {
-//			currentDist = map.get(k).get(i).getLength();
-//		}
-		
-		while (!atDest) {
-			
+	
+	private Map<Landmark, Integer> getDistancesToNeighbors(Landmark landmark) {
+		Map<Landmark, Integer> distancesToNeighbors = DSAFactory.getMap(null);
+		for (Trail trail: trails) {
+			if (trail.getLandmarkOne().equals(landmark.getId())) {
+				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkTwo()), trail.getLength());
+			}
+			else if (trail.getLandmarkTwo().equals(landmark.getId())) {
+				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkOne()), trail.getLength());
+			}
 		}
-		
+		return distancesToNeighbors;
 	}
 
 	public Landmark getLandmarkByID(String landmarkID) {
-		// TODO: Complete this method
+		for (Landmark landmark: landmarks) {
+			if (landmark.getId().equals(landmarkID)) {
+				return landmark;
+			}
+		}
 		return null;
 	}
 
 	public Map<Landmark, List<Trail>> getProposedFirstAidLocations(int numberOfIntersectingTrails) {
-		// TODO: Complete this method
-		return null;
+		Map<Landmark, List<Trail>> intersectingMap = DSAFactory.getMap(null);
+		for (Landmark landmark: landmarks) {
+			if (getIntersectingTrails(landmark).size() >= numberOfIntersectingTrails) {
+				intersectingMap.put(landmark, getIntersectingTrails(landmark));
+			}
+		}
+		return intersectingMap;
+	}
+	
+	private List<Trail> getIntersectingTrails(Landmark origin) {
+		List<Trail> list = DSAFactory.getIndexedList();
+		for (Trail trail: trails) {
+			if (origin.getId().equals(trail.getLandmarkOne()) || origin.getId().equals(trail.getLandmarkTwo())) {
+				list.addLast(trail);
+			}
+		}
+		return list;
 	}
 }
