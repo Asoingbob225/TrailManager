@@ -34,7 +34,7 @@ public class ReportManager {
 	}
 
 	public String getDistancesReport(String originLandmark) {
-		if (t.getLandmarkByID(originLandmark) == null) {
+		if (t.getLandmarkByID(originLandmark) == null && t.getDistancesToDestinations(originLandmark) == null) {
 			return "The provided landmark ID (" + originLandmark + ") is invalid for the park.";
 		}
 
@@ -88,11 +88,12 @@ public class ReportManager {
 		return output.toString();
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	private Entry<Landmark, Integer>[] distanceSort(Map<Landmark, Integer> map) {
 		DistanceComparator c = new DistanceComparator();
 		distanceSorter = DSAFactory.getComparisonSorter(c);
 
+		@SuppressWarnings("unchecked")
 		Entry<Landmark, Integer>[] e = new Entry[map.size()];
 
 		int i = 0;
@@ -105,11 +106,12 @@ public class ReportManager {
 		return e;
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	private Entry<Landmark, List<Trail>>[] intersectSort(Map<Landmark, List<Trail>> map) {
 		IntersectComparator c = new IntersectComparator();
 		intersectSorter = DSAFactory.getComparisonSorter(c);
 
+		@SuppressWarnings("unchecked")
 		Entry<Landmark, List<Trail>>[] e = new Entry[map.size()];
 		int i = 0;
 		for (Entry<Landmark, List<Trail>> entry : map.entrySet()) {

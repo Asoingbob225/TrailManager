@@ -56,6 +56,10 @@ public class TrailManager {
 	public Map<Landmark, Integer> getDistancesToDestinations(String originLandmark) {
 
 		Landmark origin = getLandmarkByID(originLandmark);
+		
+		if (origin == null) {
+			return null;
+		}
 
 		Map<Landmark, Integer> minDistMap = DSAFactory.getMap(null);
 
