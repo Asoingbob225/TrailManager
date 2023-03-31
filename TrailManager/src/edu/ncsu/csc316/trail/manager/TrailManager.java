@@ -73,6 +73,10 @@ public class TrailManager {
 
 		Map<Landmark, Map<Landmark, Integer>> neighborDist = DSAFactory.getMap(null);
 
+		if (landmarks.size() == 0) {
+			return null;
+		}
+		
 		for (Landmark landmark : landmarks) {
 			neighborDist.put(landmark, getDistancesToNeighbors(landmark));
 		}
