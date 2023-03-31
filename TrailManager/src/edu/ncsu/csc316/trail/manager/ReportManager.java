@@ -25,7 +25,7 @@ public class ReportManager {
 
 	public ReportManager(String pathToLandmarkFile, String pathToTrailFile) throws FileNotFoundException {
 
-		DSAFactory.setMapType(DataStructure.SKIPLIST);
+		DSAFactory.setMapType(DataStructure.SEARCHTABLE);
 		DSAFactory.setListType(DataStructure.SINGLYLINKEDLIST);
 		DSAFactory.setComparisonSorterType(Algorithm.MERGESORT);
 
@@ -42,25 +42,26 @@ public class ReportManager {
 		Entry<Landmark, Integer>[] sortedList = distanceSort(distanceMap);
 
 		if (sortedList.length == 1 && sortedList[0].getKey().getId().equals(originLandmark)) {
-			return "No landmarks are reachable from " + t.getLandmarkByID(originLandmark).getDescription() + " (" + originLandmark + ")" + ".";
+			return "No landmarks are reachable from " + t.getLandmarkByID(originLandmark).getDescription() + " ("
+					+ originLandmark + ")" + ".";
 		}
-
-		String output = "";
-		output += "Landmarks Reachable from " + sortedList[0].getKey().getDescription() + " (" + originLandmark
-				+ ") {\n";
+		StringBuilder output = new StringBuilder();
+		output.append("Landmarks Reachable from " + sortedList[0].getKey().getDescription() + " (" + originLandmark
+				+ ") {\n");
 		for (int i = 1; i < sortedList.length; i++) {
 			if (sortedList[i].getValue() > MILE) {
 				double miles = sortedList[i].getValue() / MILE;
 				miles = Math.round(miles * ROUND) / ROUND;
-				output += "   " + sortedList[i].getValue() + " feet (" + miles + " miles) to "
-						+ sortedList[i].getKey().getDescription() + " (" + sortedList[i].getKey().getId() + ")\n";
+				output.append("   " + sortedList[i].getValue() + " feet (" + miles + " miles) to "
+						+ sortedList[i].getKey().getDescription() + " (" + sortedList[i].getKey().getId() + ")\n");
 			} else {
-				output += "   " + sortedList[i].getValue() + " feet to " + sortedList[i].getKey().getDescription() + " ("
-						+ sortedList[i].getKey().getId() + ")\n";
+				output.append("   " + sortedList[i].getValue() + " feet to " + sortedList[i].getKey().getDescription()
+						+ " (" + sortedList[i].getKey().getId() + ")\n");
 			}
 		}
-		output += "}";
-		return output;
+		output.append("}");
+
+		return output.toString();
 	}
 
 	public String getProposedFirstAidLocations(int numberOfIntersectingTrails) {
@@ -75,16 +76,16 @@ public class ReportManager {
 			return "No landmarks have at least " + numberOfIntersectingTrails + " intersecting trails.";
 		}
 
-		String output = "";
-		output += "Proposed Locations for First Aid Stations {\n";
+		StringBuilder output = new StringBuilder();
+		output.append("Proposed Locations for First Aid Stations {\n");
 		for (int i = 0; i < sortedList.length; i++) {
 			if (sortedList[i].getValue().size() >= numberOfIntersectingTrails) {
-				output += "   " + sortedList[i].getKey().getDescription() + " (" + sortedList[i].getKey().getId()
-						+ ") - " + sortedList[i].getValue().size() + " intersecting trails\n";
+				output.append("   " + sortedList[i].getKey().getDescription() + " (" + sortedList[i].getKey().getId()
+						+ ") - " + sortedList[i].getValue().size() + " intersecting trails\n");
 			}
 		}
-		output += "}";
-		return output;
+		output.append("}");
+		return output.toString();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -98,9 +99,9 @@ public class ReportManager {
 		}
 
 		Entry<Landmark, Integer>[] e = new Entry[list.size()];
-		
+
 		int i = 0;
-		for (Entry<Landmark, Integer> entry: list) {
+		for (Entry<Landmark, Integer> entry : list) {
 			e[i] = entry;
 			i++;
 		}
@@ -119,17 +120,13 @@ public class ReportManager {
 			list.addLast(entry);
 		}
 
-//		Entry<Landmark, List<Trail>>[] e = (Entry<Landmark, List<Trail>>[]) (new Object[list.size()]);
-//		for (int i = 0; i < list.size(); i++) {
-//			e[i] = list.get(i);
-//		}
 		Entry<Landmark, List<Trail>>[] e = new Entry[list.size()];
 		int i = 0;
-		for (Entry<Landmark, List<Trail>> entry: list) {
+		for (Entry<Landmark, List<Trail>> entry : list) {
 			e[i] = entry;
 			i++;
 		}
-		
+
 		intersectSorter.sort(e);
 		return e;
 	}
