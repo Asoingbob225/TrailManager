@@ -42,7 +42,7 @@ public class ReportManager {
 		Entry<Landmark, Integer>[] sortedList = distanceSort(distanceMap);
 
 		if (sortedList.length == 1 && sortedList[0].getKey().getId().equals(originLandmark)) {
-			return "No landmarks are reachable from " + originLandmark + ".";
+			return "No landmarks are reachable from " + t.getLandmarkByID(originLandmark).getDescription() + " (" + originLandmark + ")" + ".";
 		}
 
 		String output = "";
@@ -72,7 +72,7 @@ public class ReportManager {
 		Entry<Landmark, List<Trail>>[] sortedList = intersectSort(intersectMap);
 
 		if (sortedList.length == 0) {
-			return "No landmarks have at least " + numberOfIntersectingTrails + " intersecting trails";
+			return "No landmarks have at least " + numberOfIntersectingTrails + " intersecting trails.";
 		}
 
 		String output = "";

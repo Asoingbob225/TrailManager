@@ -23,7 +23,7 @@ class ReportManagerTest {
 		ReportManager r2 = new ReportManager(LANDMARKPATH2, TRAILPATH1);
 		assertEquals("The provided landmark ID (L14) is invalid for the park.", r.getDistancesReport("L14"));
 		
-		assertEquals("No landmarks are reachable from L13.", r2.getDistancesReport("L13"));
+		assertEquals("No landmarks are reachable from Campsite 2 (L13).", r2.getDistancesReport("L13"));
 		
 		String s = "Landmarks Reachable from Entrance Fountain (L02) {\n"
 				+ "   3013 feet to Park Entrance (L01)\n"
@@ -46,7 +46,7 @@ class ReportManagerTest {
 		assertEquals("Number of intersecting trails must be greater than 0.", r.getProposedFirstAidLocations(0));
 		assertEquals("Number of intersecting trails must be greater than 0.", r.getProposedFirstAidLocations(-10));
 		
-		assertEquals("No landmarks have at least 4 intersecting trails", r.getProposedFirstAidLocations(4));
+		assertEquals("No landmarks have at least 4 intersecting trails.", r.getProposedFirstAidLocations(4));
 		
 		String s1 = "Proposed Locations for First Aid Stations {\n"
 				+ "   Park Entrance (L01) - 3 intersecting trails\n"
