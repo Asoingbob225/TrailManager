@@ -93,15 +93,10 @@ public class ReportManager {
 		DistanceComparator c = new DistanceComparator();
 		distanceSorter = DSAFactory.getComparisonSorter(c);
 
-		List<Entry<Landmark, Integer>> list = DSAFactory.getIndexedList();
-		for (Entry<Landmark, Integer> entry : map.entrySet()) {
-			list.addLast(entry);
-		}
-
-		Entry<Landmark, Integer>[] e = new Entry[list.size()];
+		Entry<Landmark, Integer>[] e = new Entry[map.size()];
 
 		int i = 0;
-		for (Entry<Landmark, Integer> entry : list) {
+		for (Entry<Landmark, Integer> entry : map.entrySet()) {
 			e[i] = entry;
 			i++;
 		}
@@ -115,14 +110,9 @@ public class ReportManager {
 		IntersectComparator c = new IntersectComparator();
 		intersectSorter = DSAFactory.getComparisonSorter(c);
 
-		List<Entry<Landmark, List<Trail>>> list = DSAFactory.getIndexedList();
-		for (Entry<Landmark, List<Trail>> entry : map.entrySet()) {
-			list.addLast(entry);
-		}
-
-		Entry<Landmark, List<Trail>>[] e = new Entry[list.size()];
+		Entry<Landmark, List<Trail>>[] e = new Entry[map.size()];
 		int i = 0;
-		for (Entry<Landmark, List<Trail>> entry : list) {
+		for (Entry<Landmark, List<Trail>> entry : map.entrySet()) {
 			e[i] = entry;
 			i++;
 		}
