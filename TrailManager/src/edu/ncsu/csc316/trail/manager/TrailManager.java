@@ -56,7 +56,7 @@ public class TrailManager {
 	public Map<Landmark, Integer> getDistancesToDestinations(String originLandmark) {
 
 		Landmark origin = getLandmarkByID(originLandmark);
-		
+
 		if (origin == null) {
 			return null;
 		}
@@ -124,10 +124,17 @@ public class TrailManager {
 	private Map<Landmark, Integer> getDistancesToNeighbors(Landmark landmark) {
 		Map<Landmark, Integer> distancesToNeighbors = DSAFactory.getMap(null);
 		for (Trail trail : trails) {
-			if (trail.getLandmarkOne().equals(landmark.getId())) {
-				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkTwo()), trail.getLength());
-			} else if (trail.getLandmarkTwo().equals(landmark.getId())) {
-				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkOne()), trail.getLength());
+			if (trail != null && trail.getLandmarkOne() != null && trail.getLandmarkTwo() != null) {
+				Landmark landmarkOne = getLandmarkByID(trail.getLandmarkOne());
+				Landmark landmarkTwo = getLandmarkByID(trail.getLandmarkTwo());
+
+				if (landmarkOne != null && landmarkTwo != null) {
+					if (landmarkOne.equals(landmark)) {
+						distancesToNeighbors.put(landmarkTwo, trail.getLength());
+					} else if (landmarkTwo.equals(landmark)) {
+						distancesToNeighbors.put(landmarkOne, trail.getLength());
+					}
+				}
 			}
 		}
 		return distancesToNeighbors;

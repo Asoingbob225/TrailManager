@@ -50,6 +50,7 @@ class TrailManagerTest {
 		assertEquals(12214, map.get(t.getLandmarkByID("L07")));
 		assertEquals(14105, map.get(t.getLandmarkByID("L08")));
 		
+		assertNull(t.getDistancesToDestinations("L40"));
 	}
 	
 	@Test

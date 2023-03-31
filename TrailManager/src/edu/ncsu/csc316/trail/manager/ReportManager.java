@@ -34,7 +34,7 @@ public class ReportManager {
 	}
 
 	public String getDistancesReport(String originLandmark) {
-		if (t.getLandmarkByID(originLandmark) == null && t.getDistancesToDestinations(originLandmark) == null) {
+		if (t.getDistancesToDestinations(originLandmark) == null) {
 			return "The provided landmark ID (" + originLandmark + ") is invalid for the park.";
 		}
 
