@@ -25,7 +25,7 @@ public class ReportManager {
 
 	public ReportManager(String pathToLandmarkFile, String pathToTrailFile) throws FileNotFoundException {
 
-		DSAFactory.setMapType(DataStructure.SEARCHTABLE);
+		DSAFactory.setMapType(DataStructure.SKIPLIST);
 		DSAFactory.setListType(DataStructure.ARRAYBASEDLIST);
 		DSAFactory.setComparisonSorterType(Algorithm.MERGESORT);
 

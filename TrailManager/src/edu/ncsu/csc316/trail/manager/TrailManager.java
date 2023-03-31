@@ -35,24 +35,6 @@ public class TrailManager {
 		trails = TrailInputReader.readTrails(pathToTrailFile);
 	}
 
-	/**
-	 * This is the algorithm that takes a origin landmark as an input, and returns a
-	 * map containing all the reachable landmarks from the starting point as the
-	 * key, and the distance to that landmark as the value. It uses several maps to
-	 * carry out its implementation, including a map of landmarks and the minimum
-	 * distance to the origin landmark, a map of all landmarks reachable from the
-	 * starting point, a map of landmarks and their distances to neighboring
-	 * landmarks, and lastly a map of landmarks and its distances to all neighboring
-	 * landmarks. It starts by setting all distances to the highest value possible,
-	 * and until it finds the smallest distance, it keeps changing the set distance
-	 * to a smaller distance. The origin landmark is then initialized to have a
-	 * distance of 0. For the other landmarks, It finds the lowest distance to a
-	 * neighboring landmark until it reaches the origin, and then adds that to the
-	 * map of minimum distances.
-	 * 
-	 * @param originLandmark
-	 * @return
-	 */
 	public Map<Landmark, Integer> getDistancesToDestinations(String originLandmark) {
 
 		Landmark origin = getLandmarkByID(originLandmark);
@@ -72,10 +54,6 @@ public class TrailManager {
 		}
 
 		Map<Landmark, Map<Landmark, Integer>> neighborDist = DSAFactory.getMap(null);
-
-		if (landmarks.size() == 0) {
-			return null;
-		}
 		
 		for (Landmark landmark : landmarks) {
 			neighborDist.put(landmark, getDistancesToNeighbors(landmark));
@@ -86,9 +64,6 @@ public class TrailManager {
 		reachFromOrigin.put(origin, distances.get(origin));
 
 		while (reachFromOrigin.size() != 0) {
-			if (getLowestDistanceLandmark(reachFromOrigin) == null) {
-				return null;
-			}
 			Landmark current = getLowestDistanceLandmark(reachFromOrigin);
 			reachFromOrigin.remove(current);
 
@@ -108,9 +83,6 @@ public class TrailManager {
 	}
 
 	private Landmark getLowestDistanceLandmark(Map<Landmark, Integer> reachFromOrigin) {
-		if (reachFromOrigin == null) {
-			return null;
-		}
 		Landmark lowestDistLandmark = null;
 		int lowestDist = Integer.MAX_VALUE;
 		for (Landmark landmark : reachFromOrigin) {
@@ -135,18 +107,12 @@ public class TrailManager {
 
 	private Map<Landmark, Integer> getDistancesToNeighbors(Landmark landmark) {
 		Map<Landmark, Integer> distancesToNeighbors = DSAFactory.getMap(null);
-		for (Trail trail : trails) {
-			if (trail != null && trail.getLandmarkOne() != null && trail.getLandmarkTwo() != null) {
-				Landmark landmarkOne = getLandmarkByID(trail.getLandmarkOne());
-				Landmark landmarkTwo = getLandmarkByID(trail.getLandmarkTwo());
-
-				if (landmarkOne != null && landmarkTwo != null) {
-					if (landmarkOne.equals(landmark)) {
-						distancesToNeighbors.put(landmarkTwo, trail.getLength());
-					} else if (landmarkTwo.equals(landmark)) {
-						distancesToNeighbors.put(landmarkOne, trail.getLength());
-					}
-				}
+		for (Trail trail: trails) {
+			if (trail.getLandmarkOne().equals(landmark.getId())) {
+				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkTwo()), trail.getLength());
+			}
+			else if (trail.getLandmarkTwo().equals(landmark.getId())) {
+				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkOne()), trail.getLength());
 			}
 		}
 		return distancesToNeighbors;
