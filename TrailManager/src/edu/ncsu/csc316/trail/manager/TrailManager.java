@@ -115,9 +115,11 @@ public class TrailManager {
 
 	private void getMinimumDistance(Landmark lowestDist, Landmark origin, Integer lenTrail,
 			Map<Landmark, Integer> distances) {
-		int startDist = distances.get(origin);
-		if (startDist + lenTrail < distances.get(lowestDist)) {
-			distances.put(lowestDist, startDist + lenTrail);
+		if (lowestDist != null && origin != null && distances != null) {
+			int startDist = distances.get(origin);
+			if (startDist + lenTrail < distances.get(lowestDist)) {
+				distances.put(lowestDist, startDist + lenTrail);
+			}
 		}
 	}
 
@@ -168,5 +170,4 @@ public class TrailManager {
 		}
 		return list;
 	}
-
 }
