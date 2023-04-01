@@ -44,7 +44,7 @@ public class TrailManager {
 		}
 
 		Map<Landmark, Integer> minDistMap = DSAFactory.getMap(null);
-
+		
 		Map<Landmark, Integer> reachFromOrigin = DSAFactory.getMap(null);
 
 		Map<Landmark, Integer> distances = DSAFactory.getMap(null);
@@ -80,6 +80,7 @@ public class TrailManager {
 		}
 
 		return minDistMap;
+		
 	}
 
 	private Landmark getLowestDistanceLandmark(Map<Landmark, Integer> reachFromOrigin) {
