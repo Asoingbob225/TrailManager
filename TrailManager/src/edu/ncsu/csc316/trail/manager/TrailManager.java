@@ -44,7 +44,7 @@ public class TrailManager {
 		}
 
 		Map<Landmark, Integer> minDistMap = DSAFactory.getMap(null);
-		
+
 		Map<Landmark, Integer> reachFromOrigin = DSAFactory.getMap(null);
 
 		Map<Landmark, Integer> distances = DSAFactory.getMap(null);
@@ -54,41 +54,47 @@ public class TrailManager {
 		}
 
 		Map<Landmark, Map<Landmark, Integer>> neighborDist = DSAFactory.getMap(null);
-		
+
 		for (Landmark landmark : landmarks) {
-			neighborDist.put(landmark, getDistancesToNeighbors(landmark));
+			Map<Landmark, Integer> distancesToNeighbors = getDistancesToNeighbors(landmark);
+			if (distancesToNeighbors != null && !distancesToNeighbors.isEmpty()) {
+				neighborDist.put(landmark, distancesToNeighbors);
+			}
 		}
 
 		distances.put(origin, 0);
 
 		reachFromOrigin.put(origin, distances.get(origin));
 
-		while (reachFromOrigin.size() != 0) {
+		while (!reachFromOrigin.isEmpty()) {
 			Landmark current = getLowestDistanceLandmark(reachFromOrigin);
 			reachFromOrigin.remove(current);
 
-			for (Entry<Landmark, Integer> neighboringLandmark : neighborDist.get(current).entrySet()) {
-				Landmark neighbor = neighboringLandmark.getKey();
-				Integer lenTrail = neighboringLandmark.getValue();
+			Map<Landmark, Integer> currentNeighborDist = neighborDist.get(current);
+			if (currentNeighborDist != null) {
+				for (Entry<Landmark, Integer> neighboringLandmark : currentNeighborDist.entrySet()) {
+					Landmark neighbor = neighboringLandmark.getKey();
+					Integer lenTrail = neighboringLandmark.getValue();
 
-				if (minDistMap.get(neighbor) == null) {
-					getMinimumDistance(neighbor, current, lenTrail, distances);
-					reachFromOrigin.put(neighbor, distances.get(neighbor));
+					if (minDistMap.get(neighbor) == null) {
+						getMinimumDistance(neighbor, current, lenTrail, distances);
+						reachFromOrigin.put(neighbor, distances.get(neighbor));
+					}
 				}
 			}
 			minDistMap.put(current, distances.get(current));
 		}
 
 		return minDistMap;
-		
+
 	}
 
 	private Landmark getLowestDistanceLandmark(Map<Landmark, Integer> reachFromOrigin) {
 		Landmark lowestDistLandmark = null;
 		int lowestDist = Integer.MAX_VALUE;
 		for (Landmark landmark : reachFromOrigin) {
-			int distance = reachFromOrigin.get(landmark);
-			if (distance < lowestDist) {
+			Integer distance = reachFromOrigin.get(landmark);
+			if (distance != null && distance < lowestDist) {
 				lowestDist = distance;
 				lowestDistLandmark = landmark;
 			}
@@ -99,8 +105,8 @@ public class TrailManager {
 	private void getMinimumDistance(Landmark lowestDist, Landmark origin, Integer lenTrail,
 			Map<Landmark, Integer> distances) {
 		if (lowestDist != null && origin != null && distances != null) {
-			int startDist = distances.get(origin);
-			if (startDist + lenTrail < distances.get(lowestDist)) {
+			Integer startDist = distances.get(origin);
+			if (startDist != null && startDist + lenTrail < distances.get(lowestDist)) {
 				distances.put(lowestDist, startDist + lenTrail);
 			}
 		}
@@ -108,16 +114,23 @@ public class TrailManager {
 
 	private Map<Landmark, Integer> getDistancesToNeighbors(Landmark landmark) {
 		Map<Landmark, Integer> distancesToNeighbors = DSAFactory.getMap(null);
-		for (Trail trail: trails) {
-			if (trail.getLandmarkOne().equals(landmark.getId())) {
-				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkTwo()), trail.getLength());
-			}
-			else if (trail.getLandmarkTwo().equals(landmark.getId())) {
-				distancesToNeighbors.put(getLandmarkByID(trail.getLandmarkOne()), trail.getLength());
+		for (Trail trail : trails) {
+			if (trail != null && trail.getLandmarkOne() != null && trail.getLandmarkTwo() != null) {
+				Landmark landmarkOne = getLandmarkByID(trail.getLandmarkOne());
+				Landmark landmarkTwo = getLandmarkByID(trail.getLandmarkTwo());
+
+				if (landmarkOne != null && landmarkTwo != null) {
+					if (landmarkOne.equals(landmark)) {
+						distancesToNeighbors.put(landmarkTwo, trail.getLength());
+					} else if (landmarkTwo.equals(landmark)) {
+						distancesToNeighbors.put(landmarkOne, trail.getLength());
+					}
+				}
 			}
 		}
 		return distancesToNeighbors;
 	}
+
 
 	public Landmark getLandmarkByID(String landmarkID) {
 		for (Landmark landmark : landmarks) {
