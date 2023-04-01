@@ -24,8 +24,8 @@ class TrailManagerTest {
 
 	@BeforeEach
 	void setUp() {
-		DSAFactory.setMapType(DataStructure.UNORDEREDLINKEDMAP);
-		DSAFactory.setListType(DataStructure.SINGLYLINKEDLIST);
+		DSAFactory.setMapType(DataStructure.SKIPLIST);
+		DSAFactory.setListType(DataStructure.ARRAYBASEDLIST);
 		DSAFactory.setComparisonSorterType(Algorithm.MERGESORT);
 	}
 	
@@ -50,7 +50,7 @@ class TrailManagerTest {
 		assertEquals(12214, map.get(t.getLandmarkByID("L07")));
 		assertEquals(14105, map.get(t.getLandmarkByID("L08")));
 		
-		assertNull(t.getDistancesToDestinations("L40"));
+		assertEquals(0, t.getDistancesToDestinations("L40").size());
 	}
 	
 	@Test
