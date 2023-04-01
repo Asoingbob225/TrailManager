@@ -35,7 +35,7 @@ public class TrailReportUI {
 		// Re-prompt the user for a valid file path until one is provided
 		do {
 			landmarkFile = in.nextLine();
-			if (landmarkFile.equals("quit")) {
+			if ("quit".equals(landmarkFile)) {
 				in.close();
 				System.exit(0);
 			}
@@ -53,7 +53,7 @@ public class TrailReportUI {
 		System.out.println("Enter the path to the file containing trail information: ");
 		do {
 			trailFile = in.nextLine();
-			if (trailFile.equals("quit")) {
+			if ("quit".equals(trailFile)) {
 				in.close();
 				System.exit(0);
 			}
@@ -74,15 +74,15 @@ public class TrailReportUI {
 				"Would you like a report of proposed first aid locations (enter \"first aid\") or a distance report (enter \"distance\")? ");
 		String reportType = in.nextLine();
 
-		if (reportType.equals("first aid")) {
+		if ("first aid".equals(reportType)) {
 			System.out.println("Please input the desired minimum number of intersecting trails: ");
 			int numIntersect = Integer.parseInt(in.nextLine());
 			System.out.println(r.getProposedFirstAidLocations(numIntersect));
-		} else if (reportType.equals("distance")) {
+		} else if ("distance".equals(reportType)) {
 			System.out.println("Please input the landmark id of the starting point: ");
 			String id = in.nextLine();
 			System.out.println(r.getDistancesReport(id));
-		} else if (reportType.equals("quit")) {
+		} else if ("quit".equals(reportType)) {
 			in.close();
 			System.exit(0);
 		} else {

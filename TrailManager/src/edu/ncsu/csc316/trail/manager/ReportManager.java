@@ -13,16 +13,38 @@ import edu.ncsu.csc316.trail.dsa.Algorithm;
 import edu.ncsu.csc316.trail.dsa.DSAFactory;
 import edu.ncsu.csc316.trail.dsa.DataStructure;
 
+/**
+ * This class creates the reports for proposed first aid locations and distances
+ * to all reachable destinations from an origin. It also carries the
+ * functionality of sorting each report in corresponding order.
+ * 
+ * @author Jimin Yu, jyu34
+ *
+ */
 public class ReportManager {
 
+	/** Represents one mile */
 	public static final double MILE = 5280.0;
+	/** Represents the decimal place to round mile values to */
 	public static final double ROUND = 100.0;
 
+	/** An instance of a sorter used to sort the distance reports */
 	private Sorter<Entry<Landmark, Integer>> distanceSorter;
+	/** An instance of a sorter used to sort the first aid location reports */
 	private Sorter<Entry<Landmark, List<Trail>>> intersectSorter;
 
+	/** An instance of the TrailManager object */
 	private TrailManager t;
 
+	/**
+	 * This is the constructor for ReportManager. It initializes all data structures
+	 * and sorting algorithms used in this project and initializes an instance of a
+	 * TrailManager
+	 * 
+	 * @param pathToLandmarkFile path to file including landmark information
+	 * @param pathToTrailFile    path to file including trail information
+	 * @throws FileNotFoundException if the provided file path does not exist
+	 */
 	public ReportManager(String pathToLandmarkFile, String pathToTrailFile) throws FileNotFoundException {
 
 		DSAFactory.setMapType(DataStructure.SKIPLIST);
@@ -33,6 +55,17 @@ public class ReportManager {
 
 	}
 
+	/**
+	 * This method outputs the proper report for the distances to destinations from
+	 * an origin point. If no landmark exists with the given ID or if none are
+	 * reachable from the landmark with the given ID, it returns the proper invalid
+	 * output statement. If any of the distances are over a mile, it returns the
+	 * standard output, but for the distances greater than a mile, it is also
+	 * displayed in miles to the nearest hundredth.
+	 * 
+	 * @param originLandmark the origin point to calculate all reachable locations
+	 * @return the proper output statement corresponding to the given ID
+	 */
 	public String getDistancesReport(String originLandmark) {
 		if (t.getDistancesToDestinations(originLandmark).size() == 0) {
 			return "The provided landmark ID (" + originLandmark + ") is invalid for the park.";
@@ -64,6 +97,16 @@ public class ReportManager {
 		return output.toString();
 	}
 
+	/**
+	 * This method outputs the proper report for proposed first aid locations. If
+	 * the inputted number of intersecting trails is less than or equal to 0, or is
+	 * too large of a number, it returns the proper invalid output statement.
+	 * 
+	 * @param numberOfIntersectingTrails the minimum number of intersecting trails
+	 *                                   that an outputted landmark must have
+	 * @return the proper output statement corresponding to the given number of
+	 *         intersecting trails
+	 */
 	public String getProposedFirstAidLocations(int numberOfIntersectingTrails) {
 		if (numberOfIntersectingTrails <= 0) {
 			return "Number of intersecting trails must be greater than 0.";
@@ -88,7 +131,16 @@ public class ReportManager {
 		return output.toString();
 	}
 
-	
+	/**
+	 * This is a helper method which sorts the output of
+	 * TrailManager.getDistancesToDestinations(). It creates a new array of map
+	 * entries, iterates through map, and adds each element into the array. It is
+	 * then sorted using a custom comparator.
+	 * 
+	 * @param map the map of landmarks and their distances to the origin that needs
+	 *            to be sorted
+	 * @return a sorted list of the map's entries
+	 */
 	private Entry<Landmark, Integer>[] distanceSort(Map<Landmark, Integer> map) {
 		DistanceComparator c = new DistanceComparator();
 		distanceSorter = DSAFactory.getComparisonSorter(c);
@@ -106,7 +158,16 @@ public class ReportManager {
 		return e;
 	}
 
-	
+	/**
+	 * This is a helper method which sorts the output of
+	 * TrailManager.getProposedFirstAidLocation(). It creates a new array of map
+	 * entries, iterates through map, and adds each element into the array. It is
+	 * then sorted using a custom comparator.
+	 * 
+	 * @param map the map of landmarks and their intersecting trails that needs to
+	 *            be sorted
+	 * @return a sorted list of the map's entries
+	 */
 	private Entry<Landmark, List<Trail>>[] intersectSort(Map<Landmark, List<Trail>> map) {
 		IntersectComparator c = new IntersectComparator();
 		intersectSorter = DSAFactory.getComparisonSorter(c);
@@ -123,6 +184,16 @@ public class ReportManager {
 		return e;
 	}
 
+	/**
+	 * This class contains a custom comparator object used to compare landmarks by
+	 * their distance to the starting point. If the distance of the first landmark
+	 * parameter is shorter or longer than the second landmark parameter, it returns
+	 * -1 or 1 respectively. If the distances are equal, the landmarks are sorted
+	 * accordingly based on alphabetical order (ascending A-Z) of their description.
+	 * 
+	 * @author Jimin Yu, jyu34
+	 *
+	 */
 	private class DistanceComparator implements Comparator<Entry<Landmark, Integer>> {
 
 		@Override
@@ -137,6 +208,16 @@ public class ReportManager {
 		}
 	}
 
+	/**
+	 * This class contains a custom comparator object used to compare landmarks by
+	 * their number of intersecting trails. If the first landmark parameter has more
+	 * or less intersecting trails than the second landmark parameter, it returns -1
+	 * or 1 respectively. If the distances are equal, the landmarks are sorted
+	 * accordingly based on alphabetical order (ascending A-Z) of their description.
+	 * 
+	 * @author Jimin Yu, jyu34
+	 *
+	 */
 	private class IntersectComparator implements Comparator<Entry<Landmark, List<Trail>>> {
 
 		@Override

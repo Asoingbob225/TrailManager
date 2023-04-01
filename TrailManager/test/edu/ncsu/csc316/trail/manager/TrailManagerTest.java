@@ -15,30 +15,46 @@ import edu.ncsu.csc316.trail.dsa.Algorithm;
 import edu.ncsu.csc316.trail.dsa.DSAFactory;
 import edu.ncsu.csc316.trail.dsa.DataStructure;
 
-
-
+/**
+ * This is the test class for TrailManager. It contains tests for every public
+ * method
+ * 
+ * @author Jimin Yu, jyu34
+ *
+ */
 class TrailManagerTest {
-	
+
+	/** Path to a landmark input file used for testing */
 	private static final String LANDMARKPATH1 = "input/landmark_file1.txt";
+	/** Path to a trail input file used for testing */
 	private static final String TRAILPATH1 = "input/trail_file1.txt";
 
+	/** This initializes each data structure type before each test */
 	@BeforeEach
 	void setUp() {
 		DSAFactory.setMapType(DataStructure.SKIPLIST);
 		DSAFactory.setListType(DataStructure.ARRAYBASEDLIST);
 		DSAFactory.setComparisonSorterType(Algorithm.MERGESORT);
 	}
-	
+
+	/**
+	 * Tests the TrailManager constructor
+	 */
 	@Test
 	void testTrailManager() {
 		assertDoesNotThrow(() -> new TrailManager(LANDMARKPATH1, TRAILPATH1));
 	}
-	
+
+	/**
+	 * Tests the getDistancesToDestinations algorithm and method
+	 * 
+	 * @throws FileNotFoundException if the provided file path does not exist
+	 */
 	@Test
 	void testGetDistancesToDestinations() throws FileNotFoundException {
 		TrailManager t = new TrailManager(LANDMARKPATH1, TRAILPATH1);
 		Map<Landmark, Integer> map = t.getDistancesToDestinations("L02");
-		
+
 		assertEquals(0, map.get(t.getLandmarkByID("L02")));
 		assertEquals(3013, map.get(t.getLandmarkByID("L01")));
 		assertEquals(3613, map.get(t.getLandmarkByID("L10")));
@@ -49,14 +65,19 @@ class TrailManagerTest {
 		assertEquals(9302, map.get(t.getLandmarkByID("L06")));
 		assertEquals(12214, map.get(t.getLandmarkByID("L07")));
 		assertEquals(14105, map.get(t.getLandmarkByID("L08")));
-		
+
 		assertEquals(0, t.getDistancesToDestinations("L40").size());
 	}
-	
+
+	/**
+	 * Tests the getLandmarkById method
+	 * 
+	 * @throws FileNotFoundException if the provided file path does not exist
+	 */
 	@Test
 	void testGetLandmarkById() throws FileNotFoundException {
 		TrailManager t = new TrailManager(LANDMARKPATH1, TRAILPATH1);
-		
+
 		assertEquals("Park Entrance", t.getLandmarkByID("L01").getDescription());
 		assertEquals("Entrance Fountain", t.getLandmarkByID("L02").getDescription());
 		assertEquals("Waste Station 1", t.getLandmarkByID("L03").getDescription());
@@ -69,7 +90,12 @@ class TrailManagerTest {
 		assertEquals("Hidden Gardens", t.getLandmarkByID("L10").getDescription());
 		assertNull(t.getLandmarkByID("L20"));
 	}
-	
+
+	/**
+	 * Tests the getProposedFirstAidLocations method
+	 * 
+	 * @throws FileNotFoundException if the provided file path does not exist
+	 */
 	@Test
 	void testGetProposedFirstAidLocations() throws FileNotFoundException {
 		TrailManager t = new TrailManager(LANDMARKPATH1, TRAILPATH1);
